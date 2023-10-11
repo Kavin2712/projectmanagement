@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Deatil</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #displayData {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            font-weight: bold;
+        }
+
+        .graph-button {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .graph-button a {
+            display: inline-block;
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .graph-button a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Project Details</h1>
+
+    <div id="displayData">
+        <!-- Display the form data here using JavaScript -->
+    </div>
+
+    <div class="graph-button">
+        <a href="71.html">Check Graph</a>
+    </div>
+
+    <script>
+        // Retrieve the form data from local storage
+        const formData = JSON.parse(localStorage.getItem("formData"));
+
+        // Display the form data on the other page
+        const displayData = document.getElementById("displayData");
+
+        if (formData) {
+            displayData.innerHTML = `
+                <p><strong>Topic:</strong> ${formData.topic}</p>
+                <p><strong>Objectives:</strong> ${formData.objectives}</p>
+                <p><strong>Problem Statement:</strong> ${formData.problemstatement}</p>
+                <p><strong>Project Finished:</strong> ${formData.finished ? "Yes" : "No"}</p>
+                <p><strong>Team Name:</strong> ${formData.teamname}</p>
+                <p><strong>Number of Team Members:</strong> ${formData.nummembers}</p>
+                <p><strong>Team Members:</strong> ${formData.teammembers}</p>
+            `;
+        }
+    </script>
+</body>
+</html>

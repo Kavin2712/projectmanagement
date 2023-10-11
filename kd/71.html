@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Project Management System</title>
+    <style>
+        body, h1, p, label {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #cfc7c4;
+        }
+
+        h1 {
+            text-align: center;
+            color: #331eb9;
+            margin-top: 20px;
+        }
+
+        center {
+            display: block;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 100px;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 auto;
+        }
+
+        input[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #completionForm, #completionGraph {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <center>
+        <h1>Project Completion Detail</h1>
+    </center>
+    <form id="projectForm">
+        <p>Enter the Leader's percentage first:</p>
+        <label for="numMembers">Number of Team Members:</label>
+        <input type="number" id="numMembers" name="numMembers" min="1" required> <br><br>
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="completionForm" style="display: none;">
+        <h2>Enter Completion Percentages</h2>
+        <form id="completionPercentageForm">
+            
+            <!-- Completion percentage and domain fields will be dynamically added here -->
+            <br>
+            <input type="submit" value="Generate Graph">
+        </form>
+    </div>
+
+    <div id="completionGraph" style="display: none;">
+        <h2>Completion Percentage Graph</h2>
+        <canvas id="completionChart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+        // JavaScript code to handle form submission and displaying graphs
+        const projectForm = document.getElementById("projectForm");
+        const completionForm = document.getElementById("completionForm");
+        const completionPercentageForm = document.getElementById("completionPercentageForm");
+        const completionGraph = document.getElementById("completionGraph");
+        let numMembersInput = document.getElementById("numMembers");
+
+        projectForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            projectForm.style.display = "none";
+            completionForm.style.display = "block";
+
+            // Generate the completion percentage and domain fields based on the number of team members
+            const numMembers = parseInt(numMembersInput.value);
+            for (let i = 1; i <= numMembers; i++) {
+                const label = document.createElement("label");
+                label.setAttribute("for", `member${i}`);
+                label.textContent = `Team Member ${i}:`;
+
+                const input = document.createElement("input");
+                input.setAttribute("type", "number");
+                input.setAttribute("id", `member${i}`);
+                input.setAttribute("name", `member${i}`);
+                input.setAttribute("min", "0");
+                input.setAttribute("max", "100");
+                input.setAttribute("required", "required");
+
+                const domainLabel = document.createElement("label");
+                domainLabel.setAttribute("for", `domain${i}`);
+                domainLabel.textContent = `Domain:`;
+
+                const domainInput = document.createElement("input");
+                domainInput.setAttribute("type", "text");
+                domainInput.setAttribute("id", `domain${i}`);
+                domainInput.setAttribute("name", `domain${i}`);
+                domainInput.setAttribute("required", "required");
+
+                completionPercentageForm.insertBefore(label, completionPercentageForm.lastElementChild);
+                completionPercentageForm.insertBefore(input, completionPercentageForm.lastElementChild);
+                completionPercentageForm.insertBefore(domainLabel, completionPercentageForm.lastElementChild);
+                completionPercentageForm.insertBefore(domainInput, completionPercentageForm.lastElementChild);
+            }
+        });
+
+        completionPercentageForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            // Process completion percentage and domain data here
+            const numMembers = parseInt(numMembersInput.value);
+            const data = [];
+
+            for (let i = 1; i <= numMembers; i++) {
+                const memberInput = document.getElementById(`member${i}`);
+                const domainInput = document.getElementById(`domain${i}`);
+                const percentage = parseInt(memberInput.value);
+                const domain = domainInput.value;
+                data.push({ name: `Team Member ${i}`, percentage, domain });
+            }
+
+            // Create a graph using Chart.js with a darker color
+            const ctx = document.getElementById("completionChart").getContext("2d");
+            const labels = data.map(member => member.name);
+            const percentages = data.map(member => member.percentage);
+            const domains = data.map(member => member.domain);
+            
+            const datasets = [{
+                label: "Completion Percentage",
+                data: percentages,
+                backgroundColor: "rgba(0, 102, 204, 0.5)", // Darker blue color
+                borderColor: "rgba(0, 51, 102, 1)", // Darker blue border color
+                borderWidth: 1
+            }];
+
+            const config = {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: datasets,
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    }
+                }
+            };
+            new Chart(ctx, config);
+
+            completionForm.style.display = "none";
+            completionGraph.style.display = "block";
+        });
+    </script>
+</body>
+</html>
